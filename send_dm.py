@@ -1,34 +1,4 @@
-name: Send Instagram DM
-
-on:
-  schedule:
-    - cron: '15 16 * * *'  # Türkiye saatiyle 23:03
-  workflow_dispatch:
-
-jobs:
-  send_dm:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Install Chromium
-      run: |
-        sudo apt update
-        sudo apt install -y chromium-browser
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name: Install dependencies
-      run: pip install selenium
-
-    - name: Write bot file
-      run: |
-        echo "from selenium import webdriver
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time
@@ -43,34 +13,38 @@ options = Options()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 options.add_argument('--no-sandbox')
+options.add_argument('--window-size=1920,1080')
 
 driver = webdriver.Chrome(options=options)
 
 try:
     driver.get('https://www.instagram.com/accounts/login/')
     time.sleep(5)
+
     driver.find_element(By.NAME, 'username').send_keys(username)
     driver.find_element(By.NAME, 'password').send_keys(password)
-    driver.find_element(By.XPATH, \"//button[@type='submit']\").click()
-    time.sleep(8)
+    driver.find_element(By.XPATH, "//button[@type='submit']").click()
+    time.sleep(10)
 
-    driver.get(f'https://www.instagram.com/{target_user}/')
+    # Instagram bazen “Şimdi Değil” tarzı popup gösterir, varsa kapat
+    try:
+        driver.find_element(By.XPATH, "//button[contains(text(), 'Şimdi Değil')]").click()
+    except:
+        pass
     time.sleep(5)
 
-    driver.find_element(By.XPATH, \"//button[text()='Mesaj gönder']\").click()
-    time.sleep(5)
+    # Hedef kişinin DM sayfasına git
+    driver.get(f'https://www.instagram.com/direct/t/{target_user}/')
+    time.sleep(10)
 
+    # Mesaj kutusunu bulup mesajı yaz
     textarea = driver.find_element(By.TAG_NAME, 'textarea')
     textarea.send_keys(message)
     time.sleep(1)
 
-    driver.find_element(By.XPATH, \"//button[text()='Gönder']\").click()
-    time.sleep(3)
-finally:
-    driver.quit()" > send_dm.py
+    # Gönder butonuna bas
+    driver.find_element(By.XPATH, "//button[text()='Gönder']").click()
+    time.sleep(5)
 
-    - name: Run bot
-      env:
-        IG_USERNAME: ${{ secrets.IG_USERNAME }}
-        IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
-      run: python send_dm.py
+finally:
+    driver.quit()
