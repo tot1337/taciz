@@ -13,7 +13,8 @@ options = Options()
 options.add_argument("--headless")  # Arka planda çalışır
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
-driver = webdriver.Chrome(options=options)
+from webdriver_manager.chrome import ChromeDriverManager
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
 try:
     driver.get("https://www.instagram.com/accounts/login/")
