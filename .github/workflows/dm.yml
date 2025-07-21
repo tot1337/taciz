@@ -26,12 +26,12 @@ jobs:
           python-version: '3.10'
 
       - name: Install Python dependencies
-        run: |
-          pip install selenium webdriver-manager
+        run: pip install selenium webdriver-manager
 
       - name: Create send_dm.py
         run: |
-          echo "from selenium import webdriver
+          cat <<EOF > send_dm.py
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import time
@@ -54,11 +54,11 @@ try:
     time.sleep(5)
     driver.find_element(By.NAME, 'username').send_keys(USERNAME)
     driver.find_element(By.NAME, 'password').send_keys(PASSWORD)
-    driver.find_element(By.XPATH, \"//button[@type='submit']\").click()
+    driver.find_element(By.XPATH, "//button[@type='submit']").click()
     time.sleep(10)
 
     try:
-        driver.find_element(By.XPATH, \"//button[contains(text(), 'Şimdi Değil')]\").click()
+        driver.find_element(By.XPATH, "//button[contains(text(), 'Şimdi Değil')]").click()
     except:
         pass
     time.sleep(5)
@@ -70,10 +70,11 @@ try:
     textarea.send_keys(MESSAGE)
     time.sleep(1)
 
-    driver.find_element(By.XPATH, \"//button[text()='Gönder']\").click()
+    driver.find_element(By.XPATH, "//button[text()='Gönder']").click()
     time.sleep(5)
 finally:
-    driver.quit()" > send_dm.py
+    driver.quit()
+EOF
 
       - name: Run the bot
         env:
