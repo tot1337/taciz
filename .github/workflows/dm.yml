@@ -26,11 +26,12 @@ jobs:
           python-version: '3.10'
 
       - name: Install Python dependencies
-        run: pip install selenium webdriver-manager
+        run: |
+          pip install selenium webdriver-manager
 
       - name: Create send_dm.py
         run: |
-          cat <<EOF > send_dm.py
+          cat > send_dm.py <<EOF
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
