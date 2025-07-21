@@ -1,3 +1,4 @@
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -13,7 +14,6 @@ options = Options()
 options.add_argument("--headless")  # Arka planda çalışır
 options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
-from webdriver_manager.chrome import ChromeDriverManager
 driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
 try:
