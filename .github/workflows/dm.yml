@@ -2,7 +2,7 @@ name: Send Instagram DM
 
 on:
   schedule:
-    - cron: '15 16 * * *'  # Türkiye saatiyle 23:03
+    - cron: '3 20 * * *'  # Türkiye saatiyle 23:03
   workflow_dispatch:
 
 jobs:
